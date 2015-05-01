@@ -29,7 +29,13 @@ public class WrenRDP extends RDP implements WrenTokens {
        block();
     }
     private void block() {
+        //moved all function calls and matches outside if statements
         decseq();
+        match(BEGIN_TOK);
+        commandseq();
+        match(END_TOK);
+        //removed all if statements to handle block without them
+        /*
         if (currTok == BEGIN_TOK) {
             match(BEGIN_TOK);
             System.out.println(" begin tok matched");
@@ -40,6 +46,7 @@ public class WrenRDP extends RDP implements WrenTokens {
              System.out.println(" end tok matched");
         }
         else error("block");
+        */
     }
     //what do we do about lambda?
     private void decseq() {
@@ -102,17 +109,21 @@ public class WrenRDP extends RDP implements WrenTokens {
     }
     private void commandseq() {
         command();
-        System.out.println(" command called1");
-        commandseq2();
-        System.out.println(" commandseq2 called in commandseq");
-        //w removed all comparisons of semi in commandseq
-        //if (currTok == SEMICOLON_TOK){
+        System.out.println(" command called in commandseq");
+        //2 changed again including compares for semi in commandseq
+        //2 and removed call to commandseq2
+        //2 commandseq2();
+        //2 System.out.println(" commandseq2 called in commandseq");
+        //1 w removed all comparisons of semi in commandseq
+        //2 reinstalled compare to semi tok in commandseq
+        if (currTok == SEMICOLON_TOK){
 
-          //  match(SEMICOLON_TOK);
-          //  System.out.println(" semicolon tok matched call commandseq");
-          //  commandseq();
-       // }
-      //  else error("commandseq");
+            match(SEMICOLON_TOK);
+            System.out.println(" semicolon tok matched call commandseq");
+            commandseq();
+        }
+        else error("commandseq");
+        error();
     }
     private void commandseq2() {
         //command();    //w rem
@@ -120,9 +131,12 @@ public class WrenRDP extends RDP implements WrenTokens {
         if (currTok == SEMICOLON_TOK) { 
             match(SEMICOLON_TOK);
             System.out.println(" semicolon tok matched");
-        }   
-        commandseq2();  //w add reversed w/ method under
-        command();  //w add
+            commandseq2(); //w adjusted to inside compare
+            command(); //w adjusted to inside compare
+        } 
+        //w put these inside the compare for semicolontok   
+        //commandseq2();  //w add reversed w/ method under
+        //command();  //w add
         System.out.println(" command seq called");
     }
     private void command() {
@@ -316,11 +330,19 @@ public class WrenRDP extends RDP implements WrenTokens {
         else error("intelement");
     }
     private void boolexpr() {
-        boolterm();
-        boolexpr2();
-         
+        //added all if statements that compare bool element
+        if (currTok == TRUE_TOK || currTok == FALSE_TOK || currTok == NOT_TOK){
+            //1 reversed order and removed call to boolexpr2
+            //2 undid because it didnt work
+            boolterm();
+            boolexpr2();
+            //2 removed because didnt work
+            //boolexpr();
+            //match(OR_TOK);
+            //boolterm();
+        }
     }
-    //why?
+    //removed call to boolexpr2
     private void boolexpr2() {
         //boolexpr();
         //w add if statement
