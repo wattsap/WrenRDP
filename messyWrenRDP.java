@@ -1,11 +1,5 @@
-public class messyWrenRDP extends RDP implements WrenTokens {
+public class WrenRDP extends RDP implements WrenTokens {
     private boolean debugShow;
-    public void setDebugShow(boolean debugShow){
-        this.debugShow = debugShow;
-    }
-    public boolean getDebugShow(){
-        return debugShow;
-    }
     public static void main(String args[]) {
 	String input = "";
 	if (args.length == 0) {
@@ -20,27 +14,24 @@ public class messyWrenRDP extends RDP implements WrenTokens {
 	WrenRDP p = new WrenRDP(input);
 	p.parse();
     }
-    //on/off switch for debug statements
     private void debug(String message) {
-        if (getDebugShow() == true) System.out.println(message);
+        if (debugShow == true) System.out.println(message);
     }
-    public messyWrenRDP(String input) {
-    //setDebugShow(true); //will have debug statements
-    setDebugShow(false); //will not have debut statements
-
+    public WrenRDP(String input) {
 	lexer = new WrenLexer(input);
+    debugShow = true;
     }
     public void StartSymbol() {
 	program();
     }
     private void program() {
        match(PROG_TOK);
-       debug(" prog tok matched in program");
+       System.out.println(" prog tok matched in program");
        match(VARIABLE_TOK);
-       debug(" variable tok matched in program");
+       System.out.println(" variable tok matched in program");
        match(IS_TOK);
-       debug(" is tok matched in program");
-       debug("  block called from program");
+       System.out.println(" is tok matched in program");
+       System.out.println("  block called from program");
        block();
     }
     private void block() {
@@ -53,12 +44,12 @@ public class messyWrenRDP extends RDP implements WrenTokens {
         /*
         if (currTok == BEGIN_TOK) {
             match(BEGIN_TOK);
-            debug(" begin tok matched");
+            System.out.println(" begin tok matched");
         }
         commandseq();
         if (currTok == END_TOK){
              match(END_TOK); 
-             debug(" end tok matched");
+             System.out.println(" end tok matched");
         }
         else error("block");
         */
@@ -78,15 +69,15 @@ public class messyWrenRDP extends RDP implements WrenTokens {
         //w didnt have if so removed
         //if (currTok == VAR_TOK) {
             match(VAR_TOK); 
-            debug(" var tok matched in dec");
-            debug("  varlist called in dec");
+            System.out.println(" var tok matched in dec");
+            System.out.println("  varlist called in dec");
             varlist();
             match(COLON_TOK);
-            debug(" colon tok matched in dec");
-            debug("  type called in dec");
+            System.out.println(" colon tok matched in dec");
+            System.out.println("  type called in dec");
             type();
             match(SEMICOLON_TOK);
-            debug(" semicolon tok matched in dec");
+            System.out.println(" semicolon tok matched in dec");
     //    }
     //    else error("dec");
      }
@@ -94,22 +85,22 @@ public class messyWrenRDP extends RDP implements WrenTokens {
     private void type() {
         if (currTok == INT_TOK) {
             match(INT_TOK);
-            debug(" march int tok in type");
+            System.out.println(" march int tok in type");
         }
         else if (currTok == BOOL_TOK) {
              match(BOOL_TOK);
-             debug(" match book tok in type");
+             System.out.println(" match book tok in type");
         }
         else error("type");
     }
     private void varlist() {
         if (currTok == VARIABLE_TOK){
              match(VARIABLE_TOK);
-             debug(" variable tok matched in varlist");
+             System.out.println(" variable tok matched in varlist");
              if (currTok == COMMA_TOK){ 
                  match(COMMA_TOK);
-                 debug(" comma tok matched in varlise");
-                 debug(" varlist called from varlist");
+                 System.out.println(" comma tok matched in varlise");
+                 System.out.println(" varlist called from varlist");
                  varlist();
              } 
         }
@@ -119,28 +110,28 @@ public class messyWrenRDP extends RDP implements WrenTokens {
     private void varlist2() {
         if (currTok == VARIABLE_TOK){
          match(VARIABLE_TOK);
-         debug(" variable tok matched in varlist2");
+         System.out.println(" variable tok matched in varlist2");
         match(COMMA_TOK);
-        debug(" comma tok matched in varlist2");
-        debug(" varlist called from varlist2");
+        System.out.println(" comma tok matched in varlist2");
+        System.out.println(" varlist called from varlist2");
         varlist();
         }
     }
     private void commandseq() {
         command();
-        debug(" command called from commandseq");
-        debug(Integer.toString(currTok));
+        System.out.println(" command called from commandseq");
+        System.out.println(currTok);
         //2 changed again including compares for semi in commandseq
         //2 and removed call to commandseq2
         //2 commandseq2();
-        //2 debug(" commandseq2 called in commandseq");
+        //2 System.out.println(" commandseq2 called in commandseq");
         //1 w removed all comparisons of semi in commandseq
         //2 reinstalled compare to semi tok in commandseq
         if (currTok == SEMICOLON_TOK){
 
             match(SEMICOLON_TOK);
-            debug(" semicolon tok matched in commandseq");
-            debug("call commandseq from commandseq");
+            System.out.println(" semicolon tok matched in commandseq");
+            System.out.println("call commandseq from commandseq");
             commandseq();
         }
         //commented out error to inspect error 21
@@ -148,10 +139,10 @@ public class messyWrenRDP extends RDP implements WrenTokens {
     }
     private void commandseq2() {
         //command();    //w rem
-       // debug(" command called"); removed w/command above
+       // System.out.println(" command called"); removed w/command above
         if (currTok == SEMICOLON_TOK) { 
             match(SEMICOLON_TOK);
-            debug(" semicolon tok matched in commandseq2");
+            System.out.println(" semicolon tok matched in commandseq2");
             commandseq2(); //w adjusted to inside compare
             command(); //w adjusted to inside compare
         }
@@ -159,39 +150,39 @@ public class messyWrenRDP extends RDP implements WrenTokens {
         //w put these inside the compare for semicolontok   
         //commandseq2();  //w add reversed w/ method under
         //command();  //w add
-        debug(" command called in commandseq2");
+        System.out.println(" command called in commandseq2");
     }
 
     private void command() {
         if (currTok == VARIABLE_TOK){ //w used var tok compare to call assign
             assign();
-            debug(" assign called in command");
-            debug(Integer.toString(currTok));
+            System.out.println(" assign called in command");
+            System.out.println(currTok);
         }
         else if (currTok == SKIP_TOK){ //changed if to else if to compare
              match(SKIP_TOK);
-             debug(" skip tok matched in command");
+             System.out.println(" skip tok matched in command");
         }
         else if (currTok == READ_TOK){
             match(READ_TOK);
-            debug(" match read tok in command");
+            System.out.println(" match read tok in command");
             match(VARIABLE_TOK);
-            debug(" match var tok in command");
+            System.out.println(" match var tok in command");
         }
         else if (currTok == WRITE_TOK){
             match(WRITE_TOK);
-            debug(" match write in command");
-            debug(" call intexpr from command");
+            System.out.println(" match write in command");
+            System.out.println(" call intexpr from command");
             intexpr();
         }
         else if (currTok == WHILE_TOK){
             match(WHILE_TOK); 
-            debug(" while tok matched in command");
-            debug(" call boolexpr from command");
+            System.out.println(" while tok matched in command");
+            System.out.println(" call boolexpr from command");
             boolexpr();
             //added lines outside to conform to working if logic
             match(DO_TOK);
-            debug(" do tok matched in command");
+            System.out.println(" do tok matched in command");
             //added because do needs to call a command seq after it 
             //gets a bool expression
             commandseq();
@@ -199,49 +190,49 @@ public class messyWrenRDP extends RDP implements WrenTokens {
             //removed, do has to be seen in correct syntax of loop
             //if (currTok == DO_TOK){
             //    match(DO_TOK);
-            //    debug(" do tok matched call commandseq");
+            //    System.out.println(" do tok matched call commandseq");
             //    commandseq();
             //}
             //left if here because end could not be seen right after command, while loop could keep going
             if (currTok == END_TOK){
                 match(END_TOK);
-                debug(" end tok matched in command");
+                System.out.println(" end tok matched in command");
                 match(WHILE_TOK);
-                debug(" while tok matched in command");
+                System.out.println(" while tok matched in command");
             }
             //added else because logically if loop continues command sequence needs to be handled again
             else if (currTok != END_TOK){
                 commandseq();
                 match(END_TOK);
-                debug(" end tok matched in while loop in command");
+                System.out.println(" end tok matched in while loop in command");
                 match(WHILE_TOK);
-                debug(" while tok matched at end of while loop in command");
+                System.out.println(" while tok matched at end of while loop in command");
             }
         } 
         else if (currTok == IF_TOK){
             match(IF_TOK);
-            debug(" if tok matched in command");
-            debug(" call boolexpr from command");
+            System.out.println(" if tok matched in command");
+            System.out.println(" call boolexpr from command");
             boolexpr();
             match(THEN_TOK);
-            debug(" then tok matched in command");
-            debug("  commandseq called from command");
+            System.out.println(" then tok matched in command");
+            System.out.println("  commandseq called from command");
             commandseq();
             if (currTok == END_TOK){
                 match(END_TOK);
-                debug(" end tok matched in command");
+                System.out.println(" end tok matched in command");
                 match(IF_TOK);
-                debug(" if tok matched in command");
+                System.out.println(" if tok matched in command");
             }
             else if (currTok == ELSE_TOK){
                 match(ELSE_TOK);
-                debug(" else tok matched");
-                debug("  call commandseq from command");
+                System.out.println(" else tok matched");
+                System.out.println("  call commandseq from command");
                 commandseq();
                 match(END_TOK);
-                debug(" End tok matched in command");
+                System.out.println(" End tok matched in command");
                 match(IF_TOK);
-                debug(" if tok matched in command");
+                System.out.println(" if tok matched in command");
             }
             else error("problem in if statements");
         }
@@ -257,18 +248,18 @@ public class messyWrenRDP extends RDP implements WrenTokens {
     private void assign(){
        // if (currTok == VARIABLE_TOK){ //removed to avoid stackoverflow by duplicate comparison in command when called
             match(VARIABLE_TOK);
-            debug(" variable tok matched in assign");
+            System.out.println(" variable tok matched in assign");
              if (currTok == INTASSIGN_TOK) {
                  match(INTASSIGN_TOK);
-                 debug("intassign tok matched");
-                 debug("intexpr called from assign");
+                 System.out.println("intassign tok matched");
+                 System.out.println("intexpr called from assign");
                  intexpr();
              }
              else if (currTok == BOOLASSIGN_TOK) {
                  match(BOOLASSIGN_TOK);
-                 debug("boolassign tok matched in assign");
-                 debug(Integer.toString(currTok));
-                 debug("  running boolexpr from assign");
+                 System.out.println("boolassign tok matched in assign");
+                 System.out.println(currTok);
+                 System.out.println("  running boolexpr from assign");
                  boolexpr();
             }
        // } //end bracket for removed if statement that caused stackover
@@ -304,20 +295,20 @@ public class messyWrenRDP extends RDP implements WrenTokens {
         //2 replaced to see what would happen
         if (currTok == INTCONST_TOK || currTok == VARIABLE_TOK ||
             currTok == LPAR_TOK || currTok == MINUS_TOK){
-                debug(" intterm called from intexpr");
+                System.out.println(" intterm called from intexpr");
                 intterm();
-                 debug(" intexpr2 called from intexpr");
+                 System.out.println(" intexpr2 called from intexpr");
                 intexpr2();
         }
     }
     
     private void intexpr2() {
         if (currTok == PLUS_TOK || currTok == MINUS_TOK){
-            debug(" weak op called from intexpr2");
+            System.out.println(" weak op called from intexpr2");
             weak_op();
-            debug(" intterm called from intexpr2");
+            System.out.println(" intterm called from intexpr2");
             intterm();
-            debug(" intexpr2 called from intexpr2");
+            System.out.println(" intexpr2 called from intexpr2");
             intexpr2();
         }
     }
@@ -327,91 +318,91 @@ public class messyWrenRDP extends RDP implements WrenTokens {
         //2 replaced to see what would happen
         if (currTok == INTCONST_TOK || currTok == VARIABLE_TOK ||
             currTok == LPAR_TOK || currTok == MINUS_TOK){
-                debug(" intelement called from intterm");
+                System.out.println(" intelement called from intterm");
                 intelement();
-                debug(" intterm2 called from intterm");
+                System.out.println(" intterm2 called from intterm");
                 intterm2();
         }
     }
     
     private void intterm2() {
         if (currTok == MUL_TOK || currTok == DIV_TOK) {
-            debug(" strong op called from intterm2");
+            System.out.println(" strong op called from intterm2");
             strong_op();//w change location
-            debug(" intelement called from intterm2");
+            System.out.println(" intelement called from intterm2");
             intelement();
-            debug(" intterm2 called from intterm2");
+            System.out.println(" intterm2 called from intterm2");
             intterm2();//w change location
         }
     }
     private void strong_op() {
         if (currTok == MUL_TOK) {
             match(MUL_TOK);
-            debug(" mul tok matchedi in strong op");
+            System.out.println(" mul tok matchedi in strong op");
         }
         else if (currTok == DIV_TOK) {
             match(DIV_TOK);
-            debug(" Div tok matched in strong op");
+            System.out.println(" Div tok matched in strong op");
         }
         else error("strong op");
     }
     private void weak_op() {
         if (currTok == PLUS_TOK){
              match(PLUS_TOK);
-             debug(" plus tok matched in weak op");
+             System.out.println(" plus tok matched in weak op");
         }
         else if (currTok == MINUS_TOK){
              match(MINUS_TOK);
-             debug(" minus tok matched in weak op");
+             System.out.println(" minus tok matched in weak op");
         }
         else error("weak op");
     }
     private void intelement() {
         if (currTok == INTCONST_TOK){
              match(INTCONST_TOK);
-             debug("intconst matched in intelement"); 
+             System.out.println("intconst matched in intelement"); 
         }
         else if (currTok == VARIABLE_TOK) { 
             match(VARIABLE_TOK);
-            debug("Variable tok matched in intelement");
+            System.out.println("Variable tok matched in intelement");
             // attempt to handle bool vs int discrepancy from variable
           // if (currTok == BOOL_TOK) {
           //     match(BOOL_TOK);
-           //    debug("Bool tok matched running boolterm");
+           //    System.out.println("Bool tok matched running boolterm");
            //    boolterm();
           //  }
          //   else if (currTok == INT_TOK){
          //       match(INT_TOK);
-         //       debug("int tok matched running intterm");
+         //       System.out.println("int tok matched running intterm");
          //       intterm();
          //   }
          //   else error("matching int and bool problem");
         }
         else if (currTok == LPAR_TOK) {
             match(LPAR_TOK);
-            debug("lpar tok matched in intelement");
-            debug("intepr called from intelement");
+            System.out.println("lpar tok matched in intelement");
+            System.out.println("intepr called from intelement");
             intexpr();
             match(RPAR_TOK);
-            debug("rpar tok matched in intelement");
+            System.out.println("rpar tok matched in intelement");
         }
         else if (currTok == MINUS_TOK){
             match(MINUS_TOK);
-            debug("minus matched in intelement");
-            debug(" intelement called from intelement");
+            System.out.println("minus matched in intelement");
+            System.out.println(" intelement called from intelement");
              intelement();
              }
         else error("intelement");
     }
     private void boolexpr() {
-        debug(Integer.toString(currTok));
+        System.out.println(currTok);
         //added all if statements that compare bool element
         //if (currTok == TRUE_TOK || currTok == FALSE_TOK || currTok == NOT_TOK){
             //1 reversed order and removed call to boolexpr2
             //2 undid because it didnt work
-            debug(" boolterm called from boolexpr");
+            System.out.println(" boolterm called from boolexpr");
             boolterm();
-            debug(" boolexpr2 called from boolexpr");
+            System.out.println(" boolexpr2 called from boolexpr");
             boolexpr2();
             //2 removed because didnt work
             //boolexpr();
@@ -426,16 +417,16 @@ public class messyWrenRDP extends RDP implements WrenTokens {
         //changed the first compare to or from true
         if (currTok == OR_TOK || currTok == FALSE_TOK || currTok == NOT_TOK){
             match(OR_TOK);
-            debug("or tok matched in boolexpr2");
-            debug(" boolterm called from boolexpr2");
+            System.out.println("or tok matched in boolexpr2");
+            System.out.println(" boolterm called from boolexpr2");
             boolterm();
-            debug(" boolexpr2 called from boolexpr2");
+            System.out.println(" boolexpr2 called from boolexpr2");
             boolexpr2();
         }
         //boolterm();
     }
     private void boolterm() {
-        debug(" boolelement called from boolterm");
+        System.out.println(" boolelement called from boolterm");
         boolelement();
         boolterm2();
     }
@@ -446,14 +437,14 @@ public class messyWrenRDP extends RDP implements WrenTokens {
             //boolterm(); //w relocate
             //c says match current token instead of and token
             //match(AND_TOK);
-            //debug("and tok matched in boolterm");
+            //System.out.println("and tok matched in boolterm");
             match(currTok);
             //debug to see since were not calling a particular token
-            debug(Integer.toString(currTok));
-            debug(" match current token");
-            debug(" boolement called from boolterm");
+            System.out.println(currTok);
+            System.out.println(" match current token");
+            System.out.println(" boolement called from boolterm");
             boolelement();
-            debug(" boolterm2 called from boolterm");
+            System.out.println(" boolterm2 called from boolterm");
             boolterm2();    // w relocated here
         }
 
