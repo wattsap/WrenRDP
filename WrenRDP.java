@@ -104,17 +104,19 @@ public class WrenRDP extends RDP implements WrenTokens {
         command();
         System.out.println(" command called1");
         commandseq2();
-        if (currTok == SEMICOLON_TOK){
+        System.out.println(" commandseq2 called in commandseq");
+        //w removed all comparisons of semi in commandseq
+        //if (currTok == SEMICOLON_TOK){
 
-            match(SEMICOLON_TOK);
-            System.out.println(" semicolon tok matched call commandseq");
-            commandseq();
-        }
-        else error("commandseq");
+          //  match(SEMICOLON_TOK);
+          //  System.out.println(" semicolon tok matched call commandseq");
+          //  commandseq();
+       // }
+      //  else error("commandseq");
     }
     private void commandseq2() {
         //command();    //w rem
-        System.out.println(" command called");
+       // System.out.println(" command called"); removed w/command above
         if (currTok == SEMICOLON_TOK) { 
             match(SEMICOLON_TOK);
             System.out.println(" semicolon tok matched");
@@ -124,9 +126,11 @@ public class WrenRDP extends RDP implements WrenTokens {
         System.out.println(" command seq called");
     }
     private void command() {
-        assign();
-        System.out.println(" assign called");
-        if (currTok == SKIP_TOK){
+        if (currTok == VARIABLE_TOK){ //w used var tok compare to call assign
+            assign();
+            System.out.println(" assign called");
+        }
+        else if (currTok == SKIP_TOK){ //changed if to else if to compare
              match(SKIP_TOK);
              System.out.println(" skip tok matched");
         }
@@ -180,7 +184,7 @@ public class WrenRDP extends RDP implements WrenTokens {
         else error("command"); 
     }
     private void assign(){
-        if (currTok == VARIABLE_TOK){
+       // if (currTok == VARIABLE_TOK){ //removed to avoid stackoverflow by duplicate comparison in command when called
             match(VARIABLE_TOK);
             System.out.println(" variable tok matched, checking in assign");
              if (currTok == INTASSIGN_TOK) {
@@ -193,7 +197,7 @@ public class WrenRDP extends RDP implements WrenTokens {
                  System.out.println("boolassign tok matched, running boolexpr");
                  boolexpr();
             }
-        }
+       // } //end bracket for removed if statement that caused stackover
         else error("assign");
     }
     private void assign2() {
