@@ -35,7 +35,10 @@ public class WrenRDP extends RDP implements WrenTokens {
             System.out.println(" begin tok matched");
         }
         commandseq();
-        if (currTok == END_TOK) match(END_TOK);
+        if (currTok == END_TOK){
+             match(END_TOK); 
+             System.out.println(" end tok matched");
+        }
         else error("block");
     }
     //what do we do about lambda?
@@ -50,7 +53,8 @@ public class WrenRDP extends RDP implements WrenTokens {
     }
 
     private void dec() {
-        if (currTok == VAR_TOK) {
+        //w didnt have if so removed
+        //if (currTok == VAR_TOK) {
             match(VAR_TOK); 
             System.out.println(" var tok matched in dec varlist called");
             varlist();
@@ -59,8 +63,8 @@ public class WrenRDP extends RDP implements WrenTokens {
             type();
             match(SEMICOLON_TOK);
             System.out.println(" semicolon tok matched");
-        }
-        else error("dec");
+    //    }
+    //    else error("dec");
      }
     
     private void type() {
@@ -99,7 +103,7 @@ public class WrenRDP extends RDP implements WrenTokens {
     private void commandseq() {
         command();
         System.out.println(" command called1");
-        //commandseq2();
+        commandseq2();
         if (currTok == SEMICOLON_TOK){
 
             match(SEMICOLON_TOK);
@@ -109,13 +113,14 @@ public class WrenRDP extends RDP implements WrenTokens {
         else error("commandseq");
     }
     private void commandseq2() {
-        command();
+        //command();    //w rem
         System.out.println(" command called");
         if (currTok == SEMICOLON_TOK) { 
             match(SEMICOLON_TOK);
             System.out.println(" semicolon tok matched");
         }   
-        commandseq();
+        commandseq2();  //w add reversed w/ method under
+        command();  //w add
         System.out.println(" command seq called");
     }
     private void command() {
@@ -192,6 +197,7 @@ public class WrenRDP extends RDP implements WrenTokens {
         else error("assign");
     }
     private void assign2() {
+        //dont know what this should be doing
 //        if (currTok == VARIABLE_TOK){
             //match(COLON_TOK);
             //match(EQ_TOK);
@@ -202,17 +208,26 @@ public class WrenRDP extends RDP implements WrenTokens {
 //        else error("assign2");
 
     }
-    private void if1() {
-    }
+
     private void if2() {
+        //w add all
+        match(IF_TOK);
+        boolexpr();
+        match(THEN_TOK);
+        commandseq();
+        match(ELSE_TOK);
+        commandseq();
+        match(EQ_TOK);
+        match(IF_TOK);
     }
 
     private void intexpr() {
-        if (currTok == INTCONST_TOK || currTok == VARIABLE_TOK ||
-            currTok == LPAR_TOK || currTok == MINUS_TOK){
+        //w didnt have so pulled if state
+       // if (currTok == INTCONST_TOK || currTok == VARIABLE_TOK ||
+       //     currTok == LPAR_TOK || currTok == MINUS_TOK){
                 intterm();
                 intexpr2();
-        }
+      //  }
     }
     
     private void intexpr2() {
@@ -224,26 +239,41 @@ public class WrenRDP extends RDP implements WrenTokens {
     }
     
     private void intterm() {
-        if (currTok == INTCONST_TOK || currTok == VARIABLE_TOK ||
-            currTok == LPAR_TOK || currTok == MINUS_TOK){
+        //w didnt have so pulled if state
+      //  if (currTok == INTCONST_TOK || currTok == VARIABLE_TOK ||
+      //      currTok == LPAR_TOK || currTok == MINUS_TOK){
                 intelement();
                 intterm2();
-        }
+      //  }
     }
     
     private void intterm2() {
-        intterm();
-        strong_op();
-        intelement();
+        if (currTok == MUL_TOK || currTok == DIV_TOK) {
+            strong_op();//w change location
+            intelement();
+            intterm2();//w change location
+        }
     }
     private void strong_op() {
-        if (currTok == MUL_TOK) match(MUL_TOK);
-        else if (currTok == DIV_TOK) match(DIV_TOK);
+        if (currTok == MUL_TOK) {
+            match(MUL_TOK);
+            System.out.println(" mul tok matched");
+        }
+        else if (currTok == DIV_TOK) {
+            match(DIV_TOK);
+            System.out.println(" Div tok matched");
+        }
         else error("strong op");
     }
     private void weak_op() {
-        if (currTok == PLUS_TOK) match(PLUS_TOK);
-        else if (currTok == MINUS_TOK) match(MINUS_TOK);
+        if (currTok == PLUS_TOK){
+             match(PLUS_TOK);
+             System.out.println(" plus tok matched");
+        }
+        else if (currTok == MINUS_TOK){
+             match(MINUS_TOK);
+             System.out.println(" minus tok matched");
+        }
         else error("weak op");
     }
     private void intelement() {
@@ -254,6 +284,7 @@ public class WrenRDP extends RDP implements WrenTokens {
         else if (currTok == VARIABLE_TOK) { 
             match(VARIABLE_TOK);
             System.out.println("Variable tok matched");
+            // attempt to handle bool vs int discrepancy from variable
           // if (currTok == BOOL_TOK) {
           //     match(BOOL_TOK);
            //    System.out.println("Bool tok matched running boolterm");
@@ -288,20 +319,26 @@ public class WrenRDP extends RDP implements WrenTokens {
     //why?
     private void boolexpr2() {
         //boolexpr();
-        match(OR_TOK);
-        System.out.println("or tok matched");
-        boolterm();
-        boolexpr2();
+        //w add if statement
+        if (currTok == TRUE_TOK || currTok == FALSE_TOK || currTok == NOT_TOK){
+            match(OR_TOK);
+            System.out.println("or tok matched");
+            boolterm();
+            boolexpr2();
+        }
         //boolterm();
     }
     private void boolterm() {
         boolelement();
     }
     private void boolterm2() {
-        boolterm();
-        match(AND_TOK);
-        System.out.println("and tok matched");
-        boolelement();
+        if (currTok == TRUE_TOK || currTok == FALSE_TOK || currTok == NOT_TOK){
+            //boolterm(); //w relocate
+            match(AND_TOK);
+            System.out.println("and tok matched");
+            boolelement();
+            boolterm2();    // w relocated here
+        }
 
     }
     private void relation() {
