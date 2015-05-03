@@ -1,3 +1,10 @@
+/*
+ * WrenRDP.java
+ * @author: andrew watts
+ * @version: 4
+ * @description: recursive descent parser for Wren language
+ * @to run: "`cat "filename".w`"     `=lowercase of tilda not single quote
+ */
 public class WrenRDP extends RDP implements WrenTokens {
     private boolean debugShow;
     public void setDebugShow(boolean debugShow){
@@ -20,6 +27,12 @@ public class WrenRDP extends RDP implements WrenTokens {
     WrenRDP p = new WrenRDP(input);
     p.parse();
     }
+    /*
+     * @function: debug
+     * @description: if true prints all error messages, if false doesnt
+     * allows ability to trace parse top-down to see what its doing when
+     * compared with a wren "filename".w file
+     */
     private void debug(String message) {
         if (getDebugShow() == true) System.out.println(message);
     }
